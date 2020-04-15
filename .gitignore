@@ -1,0 +1,17 @@
+*/data/
+*/plots/
+GAP_leap/.idea/
+logistics-notebooks/.idea/
+__pycache__/
+src/common/__pycache__/
+*/.ipynb_checkpoints/
+*/*/.ipynb_checkpoints/
+*.csv
+*.tsv
+*.png
+*DS_Store
+*.egg-info
+.ipynb_checkpoints/
+*.coverage*
+*.pkl
+*.pyc

@@ -5,3 +5,6 @@
 - check for have learnt
 - filters for check, tabs, language, date
 - CLI
+- counter of times attempted
+- pretty print of stats (graphs)
+- users
