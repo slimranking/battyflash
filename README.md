@@ -1,0 +1,7 @@
+- lookup table for phrase:translation
+- partition by date
+- language to and from
+- tags
+- check for have learnt
+- filters for check, tabs, language, date
+- CLI
