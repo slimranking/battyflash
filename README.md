@@ -8,3 +8,6 @@
 - counter of times attempted
 - pretty print of stats (graphs)
 - users
+- handle more than one translation
+- fuzzy matching
+- example sentence
