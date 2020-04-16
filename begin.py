@@ -5,8 +5,7 @@
 example = {
     'ingenuo':[{
         'flash': ['naive'],
-        'date': '2020-04-16',
-        'time': '18:23:59',
+        'datetime': '2020-04-16T19:16:29.574854+02:00',
         'tags': ['adjective', 'masculine'],
         'times_flashed': 0,
         'times_correct': 0,
@@ -15,8 +14,7 @@ example = {
     }],
     'raya':[{
         'flash': ['line', 'stripe'],
-        'date': '2020-04-16',
-        'time': '18:29:24',
+        'datetime': '2020-04-16T19:19:29.574854+02:00',
         'tags': ['noun', 'feminine'],
         'times_flashed': 0,
         'times_correct': 0,
@@ -25,8 +23,7 @@ example = {
     },
     {
         'flash': ['line of drugs'],
-        'date': '2020-04-16',
-        'time': '18:29:24',
+        'datetime': '2020-04-16T19:21:29.574854+02:00',
         'tags': ['noun', 'feminine', 'slang'],
         'times_flashed': 0,
         'times_correct': 0,
@@ -41,3 +38,54 @@ store_json(example, 'data')
 data = load_json('data')
 
 data == example
+
+
+
+######################################
+####### SKELETON PROGRAMME ###########
+######################################
+
+## 1. Which project to work on?
+###############################
+import os
+
+flashpack = input('Which Flashpack would you like to use?\n')
+flashdir = os.path.join('data', flashpack)
+data = load_json(flashdir)
+if not data:
+    print('Flashpack does not exist, creating new Flashpack')
+
+## 2. Building dataset
+######################
+from battyflash.packs import query_entry, add_entry, flash_from_data
+
+# TODO: Better word than "entry"
+print('Lets begin by adding an entry')
+
+more = 'y'
+while more == 'y':
+    name, entry = query_entry(flashpack)
+    add_entry(data, name, entry)
+    more = input(f'Do you wish to add another entry to {flashpack}? (y/n)\n')
+
+store_json(data, flashdir)
+
+
+## 3. Quizzing
+##############
+flash_from_data(data)
+
+
+
+## 3. Report Performance
+########################
+
+# performance(data)
+
+
+
+
+
+
+
+

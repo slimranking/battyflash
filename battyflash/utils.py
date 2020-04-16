@@ -8,12 +8,12 @@ def load_json(directory, file_name='flash_data.json'):
     """
     Load flash JSON from <directory>/<file_name>
 
-    If the file doesn't exist, return None
+    If the file doesn't exist, return empty dictionary
     """
     full_path = os.path.join(directory, file_name)
     
     if not os.path.exists(full_path):
-        return None
+        return {}
     
     with open(full_path) as f:
         data = json.load(f)
