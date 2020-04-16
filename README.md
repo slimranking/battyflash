@@ -11,3 +11,4 @@
 - handle more than one translation
 - fuzzy matching
 - example sentence
+- link flash cards
