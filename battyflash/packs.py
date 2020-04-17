@@ -1,3 +1,6 @@
+import itertools
+import random
+
 import pendulum
 
 def query_entry(flashpack):
@@ -71,4 +74,41 @@ def flash_from_data(data):
     Randomly select a term from <data> and quiz on the flash
     Increment counters in data if chosen
     """
-    pass
+    # TODO: Filter data by requirements...
+    #data = filter_data(data)
+    data_ls = list(data.items())
+    random.shuffle(data_ls)
+
+    response = 'placeholder'
+    
+    for k,v in data_ls:
+        print('')
+        response = input(k+'\n')
+        if not response:
+            return
+        flash = [w for f in v for w in f['flash']]
+        correct = response in flash
+        if correct:
+            print('correct!')
+            if len(flash) > 1:
+                others = [x for x in flash if x != response]
+                print('Could also of responded with...')
+                for o in others:
+                    print(o+' ')
+                print('\n')
+            for card in data[k]:
+                card['times_correct'] += 1
+        else:
+            print('Incorrect! Would have accepted...')
+            for f in flash:
+                print(f+' ')
+            print('\n')
+        for card in data[k]:
+            card['times_flashed'] += 1
+        # Add print of sentence, notes etc...
+
+
+
+
+
+

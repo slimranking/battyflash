@@ -73,6 +73,13 @@ store_json(data, flashdir)
 
 ## 3. Quizzing
 ##############
+import os
+
+flashpack = input('Which Flashpack would you like to use?\n')
+flashdir = os.path.join('data', flashpack)
+data = load_json(flashdir)
+
+print('For each item, respond with the flash, to exit, return nothing\n')
 flash_from_data(data)
 
 

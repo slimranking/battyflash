@@ -12,3 +12,4 @@
 - fuzzy matching
 - example sentence
 - link flash cards
+- parse from API
