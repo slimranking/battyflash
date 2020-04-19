@@ -48,9 +48,10 @@ data == example
 ## 1. Which project to work on?
 ###############################
 import os
+from battyflash.utils import store_json, load_json
 
 flashpack = input('Which Flashpack would you like to use?\n')
-flashdir = os.path.join('data', flashpack)
+flashdir = os.path.join('/Users/tom/.battyflash/data', flashpack)
 data = load_json(flashdir)
 if not data:
     print('Flashpack does not exist, creating new Flashpack')
@@ -62,11 +63,11 @@ from battyflash.packs import query_entry, add_entry, flash_from_data
 # TODO: Better word than "entry"
 print('Lets begin by adding an entry')
 
-more = 'y'
-while more == 'y':
+while True:
     name, entry = query_entry(flashpack)
+    if not name:
+        break
     add_entry(data, name, entry)
-    more = input(f'Do you wish to add another entry to {flashpack}? (y/n)\n')
 
 store_json(data, flashdir)
 
@@ -76,13 +77,13 @@ store_json(data, flashdir)
 import os
 
 flashpack = input('Which Flashpack would you like to use?\n')
-flashdir = os.path.join('data', flashpack)
+flashdir = os.path.join('/Users/tom/.battyflash/data', flashpack)
 data = load_json(flashdir)
 
 print('For each item, respond with the flash, to exit, return nothing\n')
 flash_from_data(data)
 
-
+store_json(data, flashdir)
 
 ## 3. Report Performance
 ########################

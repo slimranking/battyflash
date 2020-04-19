@@ -21,7 +21,7 @@ def load_json(directory, file_name='flash_data.json'):
     return data
 
 
-def store_json(d, directory, file_name='flash_data.json', backup=True):
+def store_json(d, directory='~/.battyflash/data', file_name='flash_data.json', backup=True):
     """
     Store <d> at <directory>/<file_name> as json
 

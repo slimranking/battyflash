@@ -7,13 +7,13 @@ def query_entry(flashpack):
     """
     Query user to input flashpack information
     """
-    print('Enter "n" to continue onto the next question\n')
+    print('Enter nothing to continue onto the next question\n')
     print('It is mandatory to have at least one response for questions marked *\n')
     
-    front = ''
-    while not front:
-        front = input(f'Which word or phrase would you like to store in "{flashpack}"?*\n')
-    
+    front = input(f'Which word or phrase would you like to store in "{flashpack}"?*\n')
+    if not front:
+        return None, None
+
     flashdata = []
     more = 'c'
     while not flashdata or more == 'c':
@@ -51,7 +51,7 @@ def add_entry(data, name, entry):
         data[name] = entry
 
 
-def query_list(message, min_length=-1, continue_char='n'):
+def query_list(message, min_length=-1, continue_char=''):
     """
     Repeatedly query for <message> returning answers in list
     
@@ -69,11 +69,19 @@ def query_list(message, min_length=-1, continue_char='n'):
     return l
 
 
-def flash_from_data(data):
+def flash_from_data(data, tags=None):
     """
     Randomly select a term from <data> and quiz on the flash
     Increment counters in data if chosen
+
+    tags: list
+        filter data by tags in this list, if None, use all
     """
+    if tags:
+        filt_data = filter_by_tags(data, tags)
+    else:
+        filt_data = data
+
     # TODO: Filter data by requirements...
     #data = filter_data(data)
     data_ls = list(data.items())
@@ -108,7 +116,24 @@ def flash_from_data(data):
         # Add print of sentence, notes etc...
 
 
+def filter_by_tags(data, tags):
+    """
+    Return dictionary of <data> including only entries with a tag in <tags>
 
+    data: dict
+    tags: list
+    """
+    new_dict = {}
+    for name, flash in data.items():
+        try:
+            tags_lists = [f['tags'] for f in flash]
+        except Exception as e:
+            print(e)
+            import ipdb; ipdb.set_trace()
+        data_tags = list(itertools.chain.from_iterable(tags_lists))
+        if set(data_tags).intersection(tags):
+            new_dict[name] = flash
+    return new_dict
 
 
 
