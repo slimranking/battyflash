@@ -1,15 +1,15 @@
-- lookup table for phrase:translation
-- partition by date
-- language to and from
-- tags
-- check for have learnt
-- filters for check, tabs, language, date
-- CLI
-- counter of times attempted
-- pretty print of stats (graphs)
-- users
-- handle more than one translation
-- fuzzy matching
-- example sentence
-- link flash cards
-- parse from API
+### Batty Flash
+
+#### Installation
+
+```pip install -e .```
+
+#### Usage
+
+To build dataset
+
+```python battyflash build-flashpack --flashpack <name> --directory <dir_name>```
+
+To quiz
+
+```python battyflash flashpack-quiz --flashpack <name> --directory <dir_name> --tags <tag1> <tag2> ....```
