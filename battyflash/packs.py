@@ -1,7 +1,9 @@
+import copy
 import itertools
 import random
 
 import pendulum
+import numpy as np
 
 def query_entry(flashpack):
     """
@@ -77,6 +79,9 @@ def flash_from_data(data, tags=None):
     tags: list
         filter data by tags in this list, if None, use all
     """
+    total_correct = 0
+    total_guessed = 0
+
     if tags:
         filt_data = filter_by_tags(data, tags)
     else:
@@ -85,35 +90,69 @@ def flash_from_data(data, tags=None):
     # TODO: Filter data by requirements...
     #data = filter_data(data)
     data_ls = list(data.items())
-    random.shuffle(data_ls)
+    success_metrics = [extract_success_metric(d) for w,d in data_ls]    
+    sorted_data = [data_ls[i] for i in weighted_sort(success_metrics)]
 
     response = 'placeholder'
-    
-    for k,v in data_ls:
-        print('')
-        response = input(k+'\n')
+    for i,(k,v) in enumerate(sorted_data, 1):
+        flash_mess = f'Flash #{i}'
+        print(flash_mess)
+        print('-'*len(flash_mess))
+        response = input(k+'\n').lower()
         if not response:
-            return
-        flash = [w for f in v for w in f['flash']]
+            break
+        flash = [w.lower() for f in v for w in f['flash']]
         correct = response in flash
         if correct:
-            print('correct!')
+            print('\ncorrect!')
             if len(flash) > 1:
                 others = [x for x in flash if x != response]
-                print('Could also of responded with...')
+                print('\nCould also have responded with...')
                 for o in others:
                     print(o+' ')
                 print('\n')
             for card in data[k]:
                 card['times_correct'] += 1
+            total_correct += 1
         else:
-            print('Incorrect! Would have accepted...')
+            print('\nIncorrect! Would have accepted...')
             for f in flash:
                 print(f+' ')
             print('\n')
         for card in data[k]:
             card['times_flashed'] += 1
+            card['last_interaction'] = pendulum.now().to_iso8601_string()
+            total_guessed += 1
         # Add print of sentence, notes etc...
+    
+    if total_guessed == 0:
+        print('Quitter!\n')
+        return
+    print('###################################')
+    print('############# Results #############')
+    print('###################################')
+    success_perc = round(total_correct*100/total_guessed, 3)
+    print(f'Score: {total_correct}/{total_guessed}, {success_perc}%\n')
+
+    # TODO: change to randomly select from pool of messages
+    if success_perc < 15:
+        print('Awful\n')
+    elif success_perc < 30:
+        print('Could have done better mate\n')
+    elif success_perc < 60:
+        print('Not bad keep it up\n')
+    elif success_perc < 80:
+        print('Nice score!\n')
+    elif success_perc < 100:
+        print('Killing it!\n')
+    elif success_perc == 100:
+        print('Impeccable!\n')
+
+def extract_success_metric(list_of_flash_dicts):
+    """
+    From a list of flash dictionaries extract success rate
+    """
+    return np.mean([d['times_flashed']/d['times_correct'] if d['times_correct'] else 0 for d in list_of_flash_dicts])
 
 
 def filter_by_tags(data, tags):
@@ -136,4 +175,51 @@ def filter_by_tags(data, tags):
     return new_dict
 
 
+def weighted_sort(l, factor=2, reverse=True, return_indices=True):
+    """
+    Sort <l>. The value of each element in <l> contributes to the probability that this element will be 
+    near the top of the list.
+    
+    Param
+    =====
+    l: list
+        list of values to sort
+    factor: int
+        Higher factor means higher contribution to the probability, factor of 0 is random sort
+    reverse: bool
+        If True, higher list values mean lower probability of being at the top
+        and vice versa
+    return_indices: bool
+        if False, return original list sorted, if True return indices 
+    
+    Return
+    ======
+    list of length == len(l)
+    """
+    weights_copy = copy.copy(l)
+    n = len(weights_copy)
 
+    if return_indices:
+        all_indices = list(range(n))
+
+    chosen = []
+    for i in range(n):
+        indices = list(range(len(weights_copy)))
+
+        # correction for 0s
+        weights_trans = [x**factor+0.0001 for x in weights_copy]
+        weights_sum = sum(weights_trans)
+        probs = [x/weights_sum for x in weights_trans]
+        
+        choice = np.random.choice(indices, size=1, replace=False, p=probs)[0]
+        
+        if return_indices:
+            weights_copy.pop(choice)
+            chosen.append(all_indices.pop(choice))
+        else:
+            chosen.append(weights_copy.pop(choice))
+
+    if reverse:
+        chosen.reverse()
+
+    return chosen

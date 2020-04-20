@@ -66,10 +66,15 @@ def flashpack_quiz(flashpack, directory, tags):
 
     data = load_json(flashdir)
 
-    print('\n\nFor each item, respond with the flash, to exit, return nothing\n')
+
+    print('################################')
+    print('########## Flash Quiz ##########')
+    print('################################')
+    print(f'Flashpack: {flashpack}')
+    print('For each item, respond with the flash, to exit, return nothing\n')
     flash_from_data(data, tags)
     
-    print('Nice quizzing! Storing results...\n')
+    print('Storing results...\n')
 
     store_json(data, flashdir)
 
